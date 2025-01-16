@@ -32,6 +32,7 @@ import android.widget.Spinner;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.ui.recyclerview.fragment.ScriptFragment;
+import org.catrobat.catroid.ui.fragment.CategoryBricksFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -189,7 +190,13 @@ public abstract class BrickBaseType implements Brick {
 	}
 
 	public String getHelpUrl(String category) {
-		return "https://wiki.catrobat.org/bin/view/Documentation/BrickDocumentation/" + this.getClass().getSimpleName();
+		category = category.toLowerCase().replace(" ", "");
+		CategoryBricksFactory factory = new CategoryBricksFactory();
+		String brickName = factory.getBrickUrlFriendlyName(this);
+		if (category.equals("yourbricks")) {
+			return "https://catrobat.org/docs/brickdocumentation/" + category;
+		}
+		return "https://catrobat.org/docs/brickdocumentation/" + category + "/" + brickName;
 	}
 
 	protected String getPositionInformation() {

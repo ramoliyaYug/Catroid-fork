@@ -740,7 +740,10 @@ open class CategoryBricksFactory {
         return assertionsBrickList
     }
 
-    fun searchList(searchBrick: Brick, list: List<Brick>): Boolean = list.any { it == searchBrick.javaClass }
+    fun searchList(searchBrick: Brick, list: List<Brick>): Boolean {
+        val result = list.any { it::class == searchBrick::class }
+        return result
+    }
 
     fun getBrickCategory(brick: Brick, isBackgroundSprite: Boolean, context: Context): String {
         val res = context.resources
@@ -789,5 +792,147 @@ open class CategoryBricksFactory {
         config.locale = savedLocale
         res.updateConfiguration(config, null)
         return category
+    }
+
+    fun getBrickUrlFriendlyName(brick: Brick): String {
+        val brickNameMap = mapOf(
+            // Event bricks
+            "WhenStartedBrick" to "when-scene-starts",
+            "WhenTappedBrick" to "when-tapped",
+            "WhenStageTappedBrick" to "when-stage-is-tapped",
+            "WhenBroadcastReceivedBrick" to "when-you-receive",
+            "WhenBrick" to "when-1",
+            "WhenBackgroundChangesBrick" to "when-background-changes-to",
+            "WhenClonedBrick" to "when-you-start-as-a-clone",
+            // Control bricks
+            "WaitBrick" to "wait-1-second",
+            "NoteBrick" to "note-add-comment-here",
+            "ForeverBrick" to "forever",
+            "IfLogicBeginBrick" to "if-1",
+            "IfThenLogicBeginBrick" to "if-1-2",
+            "RepeatBrick" to "repeat-10-times",
+            "RepeatUntilBrick" to "repeat-until-1",
+            "ForVariableFromToBrick" to "for-values-from-1-to-10-in",
+            "ForItemInUserListBrick" to "for-each-value-from-in",
+            "ContinueSceneBrick" to "continue-scene",
+            "SceneStartBrick" to "start-scene",
+            "FinishStageBrick" to "finish-stage",
+            "StopScriptBrick" to "stop-this-script",
+            "WaitTillIdleBrick" to "wait-until-all-other-scripts-have-stopped",
+            "CloneBrick" to "create-clone-of",
+            "DeleteThisCloneBrick" to "delete-this-clone",
+            "BroadcastBrick" to "broadcast",
+            "BroadcastWaitBrick" to "broadcast-and-wait",
+            // Motion bricks
+            "PlaceAtBrick" to "place-at",
+            "SetXBrick" to "set-x-to",
+            "SetYBrick" to "set-y-to",
+            "ChangeXByNBrick" to "change-x-by",
+            "ChangeYByNBrick" to "change-y-by",
+            "GoToBrick" to "go-to",
+            "IfOnEdgeBounceBrick" to "if-on-edge-bounce",
+            "MoveNStepsBrick" to "move-steps",
+            "TurnLeftBrick" to "turn-left-degrees",
+            "TurnRightBrick" to "turn-right-degrees",
+            "PointInDirectionBrick" to "point-in-direction-degrees",
+            "PointToBrick" to "point-towards",
+            "SetRotationStyleBrick" to "set-rotation-style",
+            "GlideToBrick" to "glide-second-to",
+            "GoNStepsBackBrick" to "go-back-layer",
+            "ComeToFrontBrick" to "go-to-front",
+            "VibrationBrick" to "vibrate-for-second",
+            "SetPhysicsObjectTypeBrick" to "set-your-motion-type-to",
+            "WhenBounceOffBrick" to "when-you-bounce-off",
+            "SetVelocityBrick" to "set-velocity-to",
+            "TurnLeftSpeedBrick" to "spin-left-degrees-second",
+            "TurnRightSpeedBrick" to "spin-right-degrees-second",
+            "SetGravityBrick" to "set-gravity-for-all-actors-and-objects-to",
+            "SetMassBrick" to "set-mass-to-kilogram",
+            "SetBounceBrick" to "set-bounce-factor-to",
+            "SetFrictionBrick" to "set-friction-to",
+            // Sound bricks
+            "PlaySoundBrick" to "start-sound",
+            "PlaySoundAndWaitBrick" to "start-sound-and-wait",
+            "StopSoundBrick" to "stop-sound",
+            "StopAllSoundsBrick" to "stop-all-sounds",
+            "SetVolumeToBrick" to "set-volume-to",
+            "ChangeVolumeByNBrick" to "change-volume-by",
+            "SetInstrumentBrick" to "set-instrument-to",
+            "PlayNoteForBeatsBrick" to "play-note-for",
+            "PlayDrumForBeatsBrick" to "play-drum-for-beats",
+            "SetTempoBrick" to "set-tempo-to",
+            "ChangeTempoByNBrick" to "change-tempo-by",
+            "PauseForBeatsBrick" to "pause-for-beats",
+            // Looks bricks
+            "SetLookBrick" to "switch-to-look",
+            "SetLookByIndexBrick" to "switch-to-look-with-number",
+            "NextLookBrick" to "next-look",
+            "PreviousLookBrick" to "previous-look",
+            "SetSizeToBrick" to "set-size-to",
+            "ChangeSizeByNBrick" to "change-size-by",
+            "HideBrick" to "hide",
+            "ShowBrick" to "show",
+            "AskBrick" to "ask-and-store-written-answer-in",
+            "SayBubbleBrick" to "say",
+            "SayForBubbleBrick" to "say-for-second",
+            "ThinkBubbleBrick" to "think",
+            "ThinkForBubbleBrick" to "think-for-second",
+            "SetTransparencyBrick" to "set-transparency-to",
+            "ChangeTransparencyByNBrick" to "change-transparency-by",
+            "SetBrightnessBrick" to "set-brightness-to",
+            "ChangeBrightnessByNBrick" to "change-brightness-by",
+            "SetColorBrick" to "set-colour-to",
+            "ChangeColorByNBrick" to "change-colour-by",
+            "FadeParticleEffectBrick" to "fade-particle-effect",
+            "ParticleEffectAdditivityBrick" to "turn-particle-effect-additivity",
+            "SetParticleColorBrick" to "set-particle-color-to",
+            "ClearGraphicEffectBrick" to "clear-graphic-effects",
+            "SetBackgroundBrick" to "set-background",
+            "SetBackgroundByIndexBrick" to "set-background-to-number",
+            "SetBackgroundAndWaitBrick" to "set-background-and-wait",
+            "SetBackgroundByIndexAndWaitBrick" to "set-background-to-number-and-wait",
+            "ChooseCameraBrick" to "turn-camera",
+            "CameraBrick" to "use-camera",
+            "FlashBrick" to "turn-flashlight",
+            "LookRequestBrick" to "get-image-from-and-use-as-current-look",
+            "PaintNewLookBrick" to "paint-new-look",
+            "EditLookBrick" to "edit-look",
+            "CopyLookBrick" to "copy-look-and-name-it",
+            "DeleteLookBrick" to "delete-look",
+            // Plot bricks
+            "StartPlotBrick" to "start-to-plot",
+            "StopPlotBrick" to "stop-to-plot",
+            "SavePlotBrick" to "save-plot",
+            // Data bricks
+            "SetVariableBrick" to "set-variable-to",
+            "ChangeVariableBrick" to "change-variable-by",
+            "ShowTextBrick" to "show-variable-at-x-y",
+            "ShowTextColorSizeAlignmentBrick" to "show-variable-at-x-y-size-colour-aligned",
+            "HideTextBrick" to "hide-variable",
+            "WriteVariableOnDeviceBrick" to "write-variable-on-device",
+            "ReadVariableFromDeviceBrick" to "read-variable-from-device",
+            "WriteVariableToFileBrick" to "write-variable-on-device", // Replace if needed
+            "ReadVariableFromFileBrick" to "read-variable-from-device", // Replace if needed
+            "AddItemToUserListBrick" to "add-to-list",
+            "DeleteItemOfUserListBrick" to "delete-item-from-list-at-position",
+            "ClearUserListBrick" to "delete-all-items-from-list",
+            "InsertItemIntoUserListBrick" to "insert-into-list-at-position",
+            "ReplaceItemInUserListBrick" to "replace-item-in-list-at-position-with",
+            "WriteListOnDeviceBrick" to "write-list-on-device",
+            "ReadListFromDeviceBrick" to "read-list-from-device",
+            "StoreCSVIntoUserListBrick" to "store-column-of-the-comma-separated-values",
+            "WebRequestBrick" to "send-web-request-to-and-store-answer-in",
+            "LookRequestBrick" to "get-image-from-and-use-as-current-look",
+            "BackgroundRequestBrick" to "set-background",
+            // Pen bricks
+            "PenDownBrick" to "pen-down",
+            "PenUpBrick" to "pen-up",
+            "SetPenSizeBrick" to "set-pen-size-to",
+            "SetPenColorBrick" to "set-pen-colour-to-red-green-blue",
+            "StampBrick" to "stamp",
+            "ClearBackgroundBrick" to "clear"
+        )
+        val className = brick::class.simpleName
+        return brickNameMap[className] ?: className?.lowercase() ?: "unknown-brick"
     }
 }
